@@ -1,0 +1,72 @@
+<?php
+
+
+namespace App\Http\Controllers;
+
+use App\profiles;
+use Illuminate\Http\Request;
+
+class ProfileController extends Controller
+{
+	public function __construct()
+    {
+         $this->middleware('auth');
+    }
+
+    public function index() 
+    {
+        $profiles = Profile::where('id','=',$profiles)->get();
+    	return view('profiles.index',compact('profiles'));
+    }
+    //edit
+    public function edit(Profile $profiles)
+    {
+    	$users = User::all();
+    	return view('profiles.edit')->with('data',$users);
+    }
+
+    public function store(Request $request) 
+    {
+    	$this->validate($request,[
+    		    'id' => 'required',
+    		    'name' => 'required',
+    		    'email' => 'required|unique:users,email',
+    		    'password' => 'required|confirmed'
+    		]);
+        $users = new Profile;
+        $users->name = $request->name;
+        $users->email = $request->email;
+        $users->password = bcrypt($request->password);
+        $users->save();
+
+        flash('Data Pribadi berhasil disimpan.');
+
+        return redirect()->route('profiles.index');
+    }
+
+    public function update(Request $request, Profile $profiles)
+    {
+    	        $rules = [
+            'name' => 'required',
+            'email' => [
+                'required',
+                 Rule::unique('users')->ignore($users->id)
+            ]
+        ];
+
+        if ($request->has('password')) {
+            $rules['password'] = 'required|confirmed';
+        }
+
+        $this->validate($request, $rules);
+
+        $users->name = $request->input('name');
+        $users->email = $request->input('email');
+        $users->password = bcrypt($request->input('password'));
+        $users->save();
+
+        flash('Data Pribadi berhasil diupdate.');
+
+        return redirect()->route('profiles.index');
+    }
+}
