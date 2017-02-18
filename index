@@ -1,0 +1,66 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-default">
+                <!-- Page title -->
+                <div class="panel-heading">Data MyAccount</div>
+                <div class="panel-body">
+                    <!-- Show flash message -->
+                    @include('flash::message')
+                    <!-- Top of table -->
+                    <div class="search">
+                        <!-- Search form -->
+                        <form action="{{ route('profile.index') }}" method="GET" class="form-search pull-left">
+                            <div class="input-group">
+                                <input type="text" name="q" class="form-control">
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-primary">
+                                        Search
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Table -->
+                    <table class="table table-hover table-striped">
+                        <!-- First Row (Title Column) -->
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                            </tr>
+                        </thead>
+                        <!-- Data Row -->
+                        <tbody>
+                            @foreach($profile as $profiles)
+                            <tr>
+                                <!-- No Urut -->
+                                <td>{{ (($profiles->currentPage() - 1 ) * $profiles->perPage() ) + $loop->iteration }}</td>
+                                <td>{{ $profiles->name }}</td>
+                                <td>{{ $profiles->email }}</td>
+                                <td>{{ $profiles->password }}</td>
+                                <td class="text-right">
+                                    <!-- Edit link -->
+                                    <a href="{{ route('profile.edit', ['id' => $->id]) }}" 
+                                        class="btn btn-primary btn-circle">
+                                        <i class="fa fa-pencil"></i>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <!-- Pagination links -->
+                    {{ $profiles->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
